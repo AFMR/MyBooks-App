@@ -3,7 +3,14 @@ import React, { Component } from 'react';
 import Book from './Book';
 
 class MainPage extends Component {
+
+  static propTypes = {
+    books: PropTypes.array.isRequired,
+    onChange: PropTypes.func.isRequired
+  }
+
   render(){
+    console.log(this.props.books);
     return(
     <div className="list-books">
             <div className="list-books-title">
