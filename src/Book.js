@@ -1,6 +1,17 @@
 import React, { Component } from 'react';
 
 class Book extends Component {
+  state = {
+    currentShelf: 'move'
+  }
+
+  selectionChanged = (e) => {
+    this.setState({
+      currentShelf: e.target.value
+    })
+    
+    this.props.onUpdateBook(this.props.book, e.target.value)
+  }
 
   render(){
       return(
@@ -8,7 +19,7 @@ class Book extends Component {
             <div className="book-top">
               <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${this.props.book.imageLinks.thumbnail}"` }}></div>
               <div className="book-shelf-changer">
-                <select>
+                <select onChange={this.selectionChanged} value={this.state.currentShelf}>
                   <option value="move" disabled>Move to...</option>
                   <option value="currentlyReading">Currently Reading</option>
                   <option value="wantToRead">Want to Read</option>
@@ -24,4 +35,4 @@ class Book extends Component {
   }
 }
 
-export default Book;
+export default Book
