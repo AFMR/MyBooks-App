@@ -29,27 +29,52 @@ class SearchPage extends Component {
     BooksAPI.update(book, shelf).then((data) => { })
   }
 
+  combineArrays = (arr1, arr2) => {
+    return arr1.map((item1)=>{
+      arr2.forEach((item2)=>{
+        if(item2.id === item1.id){
+          item1.shelf = item2.shelf
+
+          return
+        }
+      })
+
+      return item1
+    })
+  }
+
   inputUpdated = (searchText) => {
     this.setState({searchWords: searchText})
     let searchResults = []
-    if (searchText) {
-      BooksAPI.search(searchText).then(response => {
-        if (response.length) {
-          searchResults = response.map(retrievedBooks => {
-            const index = this.state.currentBooks.findIndex(c => c.id === retrievedBooks.id)
-            if( index >= 0 ) {
-              return this.state.currentBooks[index]
-            } else {
-              return retrievedBooks
-            }
-          })
-        }
+    let userBooks = []
+
+    BooksAPI.getAll()
+    .then((books)=>{
+      userBooks = books
+    })
+    .then(() => {
+      if (searchText) {
+        BooksAPI.search(searchText).then(response => {
+          if (response.length) {
+            searchResults = response.map(retrievedBooks => {
+              const index = this.state.currentBooks.findIndex(c => c.id === retrievedBooks.id)
+              if( index >= 0 ) {
+                return this.state.currentBooks[index]
+              } else {
+                return retrievedBooks
+              }
+            })
+          }
+  
+          searchResults = this.combineArrays(searchResults, userBooks)
+  
+          this.setState({searchResults})
+        })
+      }
+      else {
         this.setState({searchResults})
+      }
       })
-    }
-    else {
-      this.setState({searchResults})
-    }
   }  
 
   render (){
